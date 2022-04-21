@@ -11,7 +11,7 @@ pub trait HasTypeProperties {
     fn get_type_properties(&self) -> syn::Result<StrumTypeProperties>;
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct StrumTypeProperties {
     pub case_style: Option<CaseStyle>,
     pub ascii_case_insensitive: bool,
@@ -23,6 +23,30 @@ pub struct StrumTypeProperties {
     pub use_phf: bool,
 }
 
+impl Default for StrumTypeProperties {
+    fn default() -> Self {
+        StrumTypeProperties {
+            case_style: None,
+            ascii_case_insensitive: false,
+            crate_module_path: None,
+            discriminant_derives: Vec::new(),
+            discriminant_name: None,
+            discriminant_others: Vec::new(),
+            discriminant_vis: None,
+            use_phf: {
+                #[cfg(feature = "phf")]
+                {
+                    true
+                }
+                #[cfg(not(feature = "phf"))]
+                {
+                    false
+                }
+            },
+        }
+    }
+}
+
 impl HasTypeProperties for DeriveInput {
     fn get_type_properties(&self) -> syn::Result<StrumTypeProperties> {
         let mut output = StrumTypeProperties::default();
@@ -32,6 +56,7 @@ impl HasTypeProperties for DeriveInput {
 
         let mut serialize_all_kw = None;
         let mut ascii_case_insensitive_kw = None;
+        #[cfg(feature = "phf")]
         let mut use_phf_kw = None;
         let mut crate_module_path_kw = None;
         for meta in strum_meta {
@@ -52,7 +77,8 @@ impl HasTypeProperties for DeriveInput {
                     ascii_case_insensitive_kw = Some(kw);
                     output.ascii_case_insensitive = true;
                 }
-                EnumMeta::UsePhf(kw) => {
+                #[cfg(feature = "phf")]
+                EnumMeta::NoPhf(kw) => {
                     if let Some(fst_kw) = use_phf_kw {
                         return Err(occurrence_error(fst_kw, kw, "use_phf"));
                     }

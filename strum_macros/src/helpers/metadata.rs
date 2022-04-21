@@ -17,7 +17,8 @@ pub mod kw {
 
     // enum metadata
     custom_keyword!(serialize_all);
-    custom_keyword!(use_phf);
+    #[cfg(feature = "phf")]
+    custom_keyword!(no_phf);
 
     // enum discriminant metadata
     custom_keyword!(derive);
@@ -45,7 +46,8 @@ pub enum EnumMeta {
         kw: kw::Crate,
         crate_module_path: Path,
     },
-    UsePhf(kw::use_phf),
+    #[cfg(feature = "phf")]
+    NoPhf(kw::no_phf),
 }
 
 impl Parse for EnumMeta {
@@ -68,9 +70,11 @@ impl Parse for EnumMeta {
             })
         } else if lookahead.peek(kw::ascii_case_insensitive) {
             Ok(EnumMeta::AsciiCaseInsensitive(input.parse()?))
-        } else if lookahead.peek(kw::use_phf) {
-            Ok(EnumMeta::UsePhf(input.parse()?))
         } else {
+            #[cfg(feature = "phf")]
+            if lookahead.peek(kw::no_phf) {
+                return Ok(EnumMeta::NoPhf(input.parse()?));
+            }
             Err(lookahead.error())
         }
     }
@@ -82,7 +86,8 @@ impl Spanned for EnumMeta {
             EnumMeta::SerializeAll { kw, .. } => kw.span(),
             EnumMeta::AsciiCaseInsensitive(kw) => kw.span(),
             EnumMeta::Crate { kw, .. } => kw.span(),
-            EnumMeta::UsePhf(use_phf) => use_phf.span(),
+            #[cfg(feature = "phf")]
+            EnumMeta::NoPhf(no_phf) => no_phf.span(),
         }
     }
 }

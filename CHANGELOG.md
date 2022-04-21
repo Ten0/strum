@@ -3,7 +3,7 @@
 ## Unreleased
 
 * [#220](https://github.com/Peternator7/strum/pull/220). Add support for PHF in `EnumString` (opt-in runtime
-  performance improvements for large enums as `#[strum(use_phf)]`, requires `phf` feature and increases MSRV to `1.46`)
+  performance improvements for large enums as `phf` feature and increases MSRV to `1.46`)
 
 ## 0.24.0
 

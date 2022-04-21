@@ -47,7 +47,7 @@ fn debug_print_generated(ast: &DeriveInput, toks: &TokenStream) {
 /// See the [Additional Attributes](https://docs.rs/strum/0.22/strum/additional_attributes/index.html)
 /// Section for more information on using this feature.
 ///
-/// If you have a large enum, you may want to consider using the `use_phf` attribute here. It leverages
+/// If you have a large enum, you may want to consider using the phf feature here. It leverages
 /// perfect hash functions to parse much quicker than a standard `match`. (MSRV 1.46)
 ///
 /// # Example howto use `EnumString`

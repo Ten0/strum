@@ -28,6 +28,7 @@ travis-ci = { repository = "Peternator7/strum" }
 default = ["std"]
 derive = ["strum_macros"]
 std = []
+use_phf = ["phf", "strum_macros/phf"]
 
 [package.metadata.docs.rs]
 features = ["derive"]

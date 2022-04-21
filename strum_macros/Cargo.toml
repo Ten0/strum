@@ -18,6 +18,9 @@ readme = "../README.md"
 proc-macro = true
 name = "strum_macros"
 
+[features]
+phf = []
+
 [dependencies]
 heck = "0.4"
 proc-macro2 = "1.0"
